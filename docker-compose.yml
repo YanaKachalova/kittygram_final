@@ -1,27 +1,62 @@
-version: '3'
-
 volumes:
   pg_data:
   static:
+  media:
 
 services:
   db:
     image: postgres:13
+    restart: always
+    env_file: .env
+    environment:
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
     volumes:
       - pg_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
   backend:
     build: ./backend/
     env_file: .env
+    restart: always
+    depends_on:
+      db:
+        condition: service_healthy
+    command: >
+      sh -lc "python manage.py migrate --noinput &&
+              python manage.py collectstatic --noinput &&
+              gunicorn kittygram_backend.wsgi:application --bind 0.0.0.0:8000 --workers 4 --timeout 120"
+    volumes:
+      - static:/app/static
+      - media:/app/media
+    expose:
+      - "8000"
+
+  gateway:
+    build: ./nginx/
+    restart: always
+    depends_on:
+      - backend
+    ports:
+      - "9000:80"
+    volumes:
+      - static:/static
+      - media:/media
+
   frontend:
     env_file: .env
     build: ./frontend/
-    command: cp -r /app/build/. /static/
-    volumes:
-      - static:/static
-  gateway:
-    build: ./nginx/
-    env_file: .env
-    ports:
-      - 9000:80
+    command: >
+      sh -lc "
+      mkdir -p /static &&
+      rm -rf /static/* &&
+      cp -f /app/build/index.html /static/ &&
+      cp -r /app/build/static/* /static/
+      "
     volumes:
       - static:/static
