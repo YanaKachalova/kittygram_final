@@ -25,7 +25,7 @@ jobs:
 
       - name: Test backend
         env:
-            PYTHONPATH: backend/
+            PYTHONPATH: backend
         run: |
             set +e
             pytest -q
