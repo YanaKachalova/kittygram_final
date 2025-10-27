@@ -1,0 +1,40 @@
+services:
+    db:
+        image: postgres:13
+        restart: always
+        env_file: .env
+        volums:
+            - pg_data:/var/lib/postgresql/data/
+
+    backend:
+        image: yanakachalova0401/kittygram_backend:latest
+        restart: always
+        env_file: .env
+        depends_on:
+            - db
+        volums:
+            - static:/app/static
+            - media:/app/media
+
+    frontend:
+        image: yanakachalova0401/kittygram_frontend:latest
+        restart: always
+        volumes:
+            - static:/app/build
+
+    gateway:
+        image: yanakachalova0401/kittygram_gateway:latest
+        restart: always
+        ports:
+            - "9000:80"
+        volumes:
+            - static:/static
+            - media:/media
+        depends_on:
+            - frontend
+            - backend
+
+volumes:
+    pg_data:
+    static:
+    media:
