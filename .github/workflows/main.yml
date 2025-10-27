@@ -90,11 +90,10 @@ jobs:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_KEY }}
-          passphrase: ${{ secrets.SSH_PASSPHRASE }}.
           port: 22
           script: |
             set -e
-            cd ~/kittygram
+            cd ~/kittygram_final
             docker pull ${{ secrets.DOCKERHUB_USERNAME }}/kittygram_backend:latest
             docker pull ${{ secrets.DOCKERHUB_USERNAME }}/kittygram_frontend:latest
             docker pull ${{ secrets.DOCKERHUB_USERNAME }}/kittygram_gateway:latest
