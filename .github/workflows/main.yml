@@ -24,14 +24,22 @@ jobs:
         run: flake8 .
 
       - name: Test backend
-        working-directory: backend
-        run: pytest -q
+        env:
+            PYTHONPATH: backend/
+        run: |
+            set +e
+            pytest -q
+            code=$?
+            exit $code
 
       - uses: actions/setup-node@v4
         with:
           node-version: "20"
+      - name: Install frontend deps
       - working-directory: frontend
         run: npm ci
+
+      - name: Test frontend
       - working-directory: frontend
         run: npm test --if-present
 
