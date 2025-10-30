@@ -1,4 +1,7 @@
 # Kittygram
+
+![Build Status](https://github.com/YanaKachalova/kittygram_final/actions/workflows/main.yml/badge.svg)
+
 Kittygram — это веб-приложение для публикации и просмотра фотографий котов. 
 Каждый пользователь может зарегистрироваться, добавить своих питомцев, а также прикрепить их фото и достижения 
 Проект реализован на Django REST Framework и предназначен для демонстрации работы API и CI/CD с Docker и GitHub Actions.
