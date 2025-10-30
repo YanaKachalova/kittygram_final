@@ -11,8 +11,8 @@ router.register(r'achievements', AchievementViewSet)
 
 apipatterns = [
     path('', include(router.urls)),
-    path('', include('djoser.urls')), # Работа с пользователями
-    path('', include('djoser.urls.authtoken')), # Работа с токенами
+    path('', include('djoser.urls')),  # Работа с пользователями
+    path('', include('djoser.urls.authtoken')),  # Работа с токенами
 ]
 
 urlpatterns = [
